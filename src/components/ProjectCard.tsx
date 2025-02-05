@@ -18,7 +18,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
-  const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
+  const ADMIN_KEY = "your-secret-key";
   const isAdmin = localStorage.getItem('admin_key') === ADMIN_KEY;
 
   const getIcon = () => {
@@ -30,27 +30,6 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
       default:
         return <Folder className="w-4 h-4" />;
     }
-  };
-
-  const detectTechnologies = (url: string): string[] => {
-    const techs: string[] = [];
-    const lowerUrl = url.toLowerCase();
-
-    // GitHub repository detection
-    if (lowerUrl.includes('github.com')) {
-      techs.push('GitHub');
-    }
-
-    // Common web technologies
-    if (lowerUrl.includes('vercel.app')) {
-      techs.push('Vercel');
-    }
-    if (lowerUrl.includes('netlify.app')) {
-      techs.push('Netlify');
-    }
-
-    // Add more technology detection logic here
-    return techs;
   };
 
   const renderMedia = () => {
@@ -80,8 +59,6 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
     );
   };
 
-  const technologies = detectTechnologies(project.url);
-
   return (
     <Card className="project-card glass animate-fade-in overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -96,9 +73,9 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
           {project.description}
         </CardDescription>
         
-        {technologies.length > 0 && (
+        {project.technologies && project.technologies.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {technologies.map((tech) => (
+            {project.technologies.map((tech) => (
               <Badge
                 key={tech}
                 variant="secondary"
@@ -162,4 +139,3 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
-

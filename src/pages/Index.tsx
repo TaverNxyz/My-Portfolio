@@ -19,7 +19,8 @@ const Index = () => {
       description: "EFT KD Dropper with Round Count and Map Selection",
       type: "repository",
       url: "https://github.com/TaverNxyz/SecureDDropper/releases/tag/v1.4.0",
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475", // Using a placeholder tech image
+      image: "/lovable-uploads/e4e3cdc3-1628-486c-8c0b-7502c4b4040b.png",
+      technologies: ["Python", "Batch"]
     }
   ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
