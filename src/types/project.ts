@@ -8,4 +8,5 @@ export interface Project {
   type: ProjectType;
   url: string;
   image?: string;
+  isIframe?: boolean;
 }

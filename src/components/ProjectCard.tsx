@@ -27,6 +27,31 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
     }
   };
 
+  const renderMedia = () => {
+    if (!project.image) return null;
+
+    if (project.isIframe) {
+      return (
+        <iframe
+          src={project.image}
+          className="w-full aspect-video rounded-md mb-4"
+          allowFullScreen
+          loading="lazy"
+        />
+      );
+    }
+
+    return (
+      <div className="relative w-full aspect-video mb-4 overflow-hidden rounded-md">
+        <img
+          src={project.image}
+          alt={project.title}
+          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+        />
+      </div>
+    );
+  };
+
   return (
     <Card className="project-card glass animate-fade-in">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -38,10 +63,11 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-sm text-gray-600">
+        {renderMedia()}
+        <CardDescription className="text-sm text-gray-600 mb-4">
           {project.description}
         </CardDescription>
-        <div className="mt-4 flex justify-between items-center">
+        <div className="flex justify-between items-center">
           <a
             href={project.url}
             target="_blank"
