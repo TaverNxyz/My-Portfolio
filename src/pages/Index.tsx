@@ -1,14 +1,16 @@
+
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Index = () => {
   const { toast } = useToast();
-  const [projects, setProjects] = useState<Project[]>([
+  const [projects] = useState<Project[]>([
     {
       id: "1",
       title: "SecureDDropper",
@@ -29,44 +31,22 @@ const Index = () => {
     },
   ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const ADMIN_PASSWORD = "taver"; // Simple password for demonstration
 
-  const handleAddProject = (projectData: Omit<Project, "id">) => {
-    const newProject: Project = {
-      ...projectData,
-      id: Date.now().toString(),
-    };
-    setProjects([...projects, newProject]);
-    toast({
-      title: "Success",
-      description: "Project added successfully",
-    });
-  };
-
-  const handleEditProject = (project: Project) => {
-    setEditingProject(project);
-    setIsFormOpen(true);
-  };
-
-  const handleUpdateProject = (projectData: Omit<Project, "id">) => {
-    if (!editingProject) return;
-    const updatedProjects = projects.map((p) =>
-      p.id === editingProject.id ? { ...projectData, id: p.id } : p
-    );
-    setProjects(updatedProjects);
-    setEditingProject(undefined);
-    toast({
-      title: "Success",
-      description: "Project updated successfully",
-    });
-  };
-
-  const handleDeleteProject = (id: string) => {
-    setProjects(projects.filter((p) => p.id !== id));
-    toast({
-      title: "Success",
-      description: "Project deleted successfully",
-    });
+  const handleAuth = () => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthDialogOpen(false);
+      setIsFormOpen(true);
+      setPassword("");
+    } else {
+      toast({
+        title: "Error",
+        description: "Incorrect password",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -93,16 +73,6 @@ const Index = () => {
                 Showcase your websites, repositories, and projects
               </p>
             </div>
-            <Button
-              onClick={() => {
-                setEditingProject(undefined);
-                setIsFormOpen(true);
-              }}
-              className="glass"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Project
-            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -110,20 +80,42 @@ const Index = () => {
               <ProjectCard
                 key={project.id}
                 project={project}
-                onEdit={handleEditProject}
-                onDelete={handleDeleteProject}
+                onEdit={() => setIsAuthDialogOpen(true)}
+                onDelete={() => setIsAuthDialogOpen(true)}
               />
             ))}
           </div>
 
+          <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
+            <DialogContent className="glass sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Authentication Required</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4">
+                <Input
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleAuth()}
+                />
+                <Button onClick={handleAuth} className="w-full">
+                  Submit
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
           <ProjectForm
-            project={editingProject}
             isOpen={isFormOpen}
-            onClose={() => {
+            onClose={() => setIsFormOpen(false)}
+            onSave={() => {
+              toast({
+                title: "Success",
+                description: "Project updated successfully",
+              });
               setIsFormOpen(false);
-              setEditingProject(undefined);
             }}
-            onSave={editingProject ? handleUpdateProject : handleAddProject}
           />
         </div>
       </div>
