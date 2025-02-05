@@ -4,7 +4,7 @@ import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus, ShieldAlert } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "project_showcase_data";
@@ -12,7 +12,16 @@ const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authenticatio
 
 const Index = () => {
   const { toast } = useToast();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([
+    {
+      id: "1",
+      title: "SecureDDropper",
+      description: "EFT KD Dropper with Round Count and Map Selection",
+      type: "repository",
+      url: "https://github.com/TaverNxyz/SecureDDropper/releases/tag/v1.4.0",
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475", // Using a placeholder tech image
+    }
+  ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -173,4 +182,3 @@ const Index = () => {
 };
 
 export default Index;
-
