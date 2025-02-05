@@ -1,11 +1,98 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from "react";
+import { Project } from "@/types/project";
+import ProjectCard from "@/components/ProjectCard";
+import ProjectForm from "@/components/ProjectForm";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
+  const { toast } = useToast();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | undefined>();
+
+  const handleAddProject = (projectData: Omit<Project, "id">) => {
+    const newProject: Project = {
+      ...projectData,
+      id: Date.now().toString(),
+    };
+    setProjects([...projects, newProject]);
+    toast({
+      title: "Success",
+      description: "Project added successfully",
+    });
+  };
+
+  const handleEditProject = (project: Project) => {
+    setEditingProject(project);
+    setIsFormOpen(true);
+  };
+
+  const handleUpdateProject = (projectData: Omit<Project, "id">) => {
+    if (!editingProject) return;
+    const updatedProjects = projects.map((p) =>
+      p.id === editingProject.id ? { ...projectData, id: p.id } : p
+    );
+    setProjects(updatedProjects);
+    setEditingProject(undefined);
+    toast({
+      title: "Success",
+      description: "Project updated successfully",
+    });
+  };
+
+  const handleDeleteProject = (id: string) => {
+    setProjects(projects.filter((p) => p.id !== id));
+    toast({
+      title: "Success",
+      description: "Project deleted successfully",
+    });
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-4xl font-bold">My Projects</h1>
+            <p className="text-gray-600 mt-2">
+              Showcase your websites, repositories, and projects
+            </p>
+          </div>
+          <Button
+            onClick={() => {
+              setEditingProject(undefined);
+              setIsFormOpen(true);
+            }}
+            className="glass"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Project
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {projects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onEdit={handleEditProject}
+              onDelete={handleDeleteProject}
+            />
+          ))}
+        </div>
+
+        <ProjectForm
+          project={editingProject}
+          isOpen={isFormOpen}
+          onClose={() => {
+            setIsFormOpen(false);
+            setEditingProject(undefined);
+          }}
+          onSave={editingProject ? handleUpdateProject : handleAddProject}
+        />
       </div>
     </div>
   );
