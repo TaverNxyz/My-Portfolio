@@ -9,5 +9,4 @@ export interface Project {
   url: string;
   image?: string;
   isIframe?: boolean;
-  technologies?: string[];
 }
