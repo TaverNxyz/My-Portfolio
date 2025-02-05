@@ -20,77 +20,83 @@ const AuthPage = () => {
     setLoading(true);
 
     try {
-      // First try to sign in
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      if (email !== 'voee178@gmail.com') {
+        toast({
+          title: "Error",
+          description: "Not authorized as owner",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
 
-      if (signInError) {
-        if (signInError.message.includes("Invalid") && password === "Annahighschool20") {
-          // If login fails but password matches owner password, try to sign up
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-            email,
-            password,
-          });
+      // First check if owner profile exists
+      const { data: ownerData, error: ownerError } = await supabase
+        .from('owner_profile')
+        .select()
+        .eq('email', email)
+        .maybeSingle();
 
-          if (signUpError) {
-            toast({
-              title: "Error",
-              description: signUpError.message,
-              variant: "destructive",
-            });
-          } else {
-            // Insert into owner_profile
-            const { error: profileError } = await supabase
-              .from('owner_profile')
-              .insert([{ id: signUpData.user?.id, email }]);
+      // If no owner profile exists and password matches owner password, create one
+      if (!ownerData && password === "Annahighschool20") {
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
 
-            if (profileError) {
-              console.error("Error creating owner profile:", profileError);
-            }
-
-            toast({
-              title: "Success",
-              description: "Owner account created successfully",
-            });
-            navigate("/");
-          }
-        } else {
-          toast({
-            title: "Error",
-            description: "Invalid owner credentials",
-            variant: "destructive",
-          });
+        if (signUpError) {
+          throw signUpError;
         }
+
+        // Create owner profile
+        const { error: profileError } = await supabase
+          .from('owner_profile')
+          .insert([{ id: signUpData.user?.id, email }]);
+
+        if (profileError) {
+          console.error("Error creating owner profile:", profileError);
+          throw profileError;
+        }
+
+        toast({
+          title: "Success",
+          description: "Owner account created successfully",
+        });
+        navigate("/");
       } else {
-        // Check if user is owner
-        const { data: ownerData, error: ownerError } = await supabase
+        // Try to sign in
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (signInError) {
+          throw signInError;
+        }
+
+        // Verify owner status after sign in
+        const { data: verifyOwnerData, error: verifyOwnerError } = await supabase
           .from('owner_profile')
           .select()
           .eq('id', signInData.user.id)
           .maybeSingle();
 
-        if (ownerError || !ownerData) {
+        if (verifyOwnerError || !verifyOwnerData) {
           await supabase.auth.signOut();
-          toast({
-            title: "Error",
-            description: "Not authorized as owner",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Success",
-            description: "Successfully signed in as owner",
-          });
-          navigate("/");
+          throw new Error("Not authorized as owner");
         }
+
+        toast({
+          title: "Success",
+          description: "Successfully signed in as owner",
+        });
+        navigate("/");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Auth error:", error);
       toast({
         title: "Error",
-        description: "An unexpected error occurred",
+        description: error.message || "An unexpected error occurred",
         variant: "destructive",
       });
     }
