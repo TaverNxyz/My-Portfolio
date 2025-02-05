@@ -1,3 +1,4 @@
+
 import { Project } from "@/types/project";
 import { Link2, Github, Folder, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import {
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/components/AuthProvider";
 
 interface ProjectCardProps {
   project: Project;
@@ -17,12 +19,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
-  const ADMIN_KEY = "your-secret-key"; // Make sure this matches exactly
-  const isAdmin = localStorage.getItem('admin_key') === ADMIN_KEY;
-  console.log('ProjectCard admin check:', { 
-    storedKey: localStorage.getItem('admin_key'),
-    isAdmin 
-  }); // Debug log
+  const { user } = useAuth();
+  const isOwner = user?.id === project.user_id;
 
   const getIcon = () => {
     switch (project.type) {
@@ -39,12 +37,9 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
     const techs: string[] = [];
     const lowerUrl = url.toLowerCase();
 
-    // GitHub repository detection
     if (lowerUrl.includes('github.com')) {
       techs.push('GitHub');
     }
-
-    // Common web technologies
     if (lowerUrl.includes('vercel.app')) {
       techs.push('Vercel');
     }
@@ -52,7 +47,6 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
       techs.push('Netlify');
     }
 
-    // Add more technology detection logic here
     return techs;
   };
 
@@ -138,7 +132,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
               )}
             </a>
           </Button>
-          {isAdmin && (
+          {isOwner && (
             <div className="flex gap-2">
               <Button
                 variant="ghost"

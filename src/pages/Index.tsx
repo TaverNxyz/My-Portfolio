@@ -1,16 +1,21 @@
 
 import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Project } from "@/types/project";
 import ProjectGrid from "@/components/ProjectGrid";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, LogIn, LogOut } from "lucide-react";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useProjects } from "@/hooks/useProjects";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/components/AuthProvider";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const isAdmin = useAdmin();
   const { projects, isLoading, fetchProjects, addProject, updateProject, deleteProject } = useProjects();
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -20,11 +25,19 @@ const Index = () => {
     fetchProjects();
   }, []);
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    toast({
+      title: "Signed out",
+      description: "Successfully signed out",
+    });
+  };
+
   const handleAddProject = async (projectData: Omit<Project, "id">) => {
-    if (!isAdmin) {
+    if (!user) {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to add projects",
+        description: "You must be signed in to add projects",
         variant: "destructive",
       });
       return;
@@ -37,10 +50,10 @@ const Index = () => {
   };
 
   const handleEditProject = (project: Project) => {
-    if (!isAdmin) {
+    if (!user) {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to edit projects",
+        description: "You must be signed in to edit projects",
         variant: "destructive",
       });
       return;
@@ -50,10 +63,10 @@ const Index = () => {
   };
 
   const handleUpdateProject = async (projectData: Omit<Project, "id">) => {
-    if (!isAdmin || !editingProject) {
+    if (!user || !editingProject) {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to update projects",
+        description: "You must be signed in to update projects",
         variant: "destructive",
       });
       return;
@@ -67,10 +80,10 @@ const Index = () => {
   };
 
   const handleDeleteProject = async (id: string) => {
-    if (!isAdmin) {
+    if (!user) {
       toast({
         title: "Access Denied",
-        description: "You don't have permission to delete projects",
+        description: "You must be signed in to delete projects",
         variant: "destructive",
       });
       return;
@@ -105,18 +118,38 @@ const Index = () => {
                 Showcase your websites, repositories, and projects
               </p>
             </div>
-            {isAdmin && (
-              <Button
-                onClick={() => {
-                  setEditingProject(undefined);
-                  setIsFormOpen(true);
-                }}
-                className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
-              >
-                <Plus className="w-5 h-5 mr-2" />
-                Add Project
-              </Button>
-            )}
+            <div className="flex gap-4">
+              {user ? (
+                <>
+                  <Button
+                    onClick={() => {
+                      setEditingProject(undefined);
+                      setIsFormOpen(true);
+                    }}
+                    className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
+                  >
+                    <Plus className="w-5 h-5 mr-2" />
+                    Add Project
+                  </Button>
+                  <Button
+                    onClick={handleSignOut}
+                    variant="outline"
+                    className="glass hover:bg-white/10"
+                  >
+                    <LogOut className="w-5 h-5 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  onClick={() => navigate("/auth")}
+                  className="glass hover:bg-white/10"
+                >
+                  <LogIn className="w-5 h-5 mr-2" />
+                  Sign In
+                </Button>
+              )}
+            </div>
           </div>
 
           <ProjectGrid
