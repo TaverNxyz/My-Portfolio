@@ -18,6 +18,9 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
+  const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
+  const isAdmin = localStorage.getItem('admin_key') === ADMIN_KEY;
+
   const getIcon = () => {
     switch (project.type) {
       case "website":
@@ -132,24 +135,26 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
               )}
             </a>
           </Button>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onEdit(project)}
-              className="hover:bg-white/10"
-            >
-              <Pencil className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => onDelete(project.id)}
-              className="hover:bg-red-500/20 text-red-400 hover:text-red-300"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
-          </div>
+          {isAdmin && (
+            <div className="flex gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onEdit(project)}
+                className="hover:bg-white/10"
+              >
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onDelete(project.id)}
+                className="hover:bg-red-500/20 text-red-400 hover:text-red-300"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -157,3 +162,4 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
+

@@ -4,16 +4,24 @@ import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "project_showcase_data";
+const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
 
 const Index = () => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  // Check if user is admin
+  useEffect(() => {
+    const adminKey = localStorage.getItem('admin_key');
+    setIsAdmin(adminKey === ADMIN_KEY);
+  }, []);
 
   // Load projects from localStorage on initial render
   useEffect(() => {
@@ -29,6 +37,14 @@ const Index = () => {
   }, [projects]);
 
   const handleAddProject = (projectData: Omit<Project, "id">) => {
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to add projects",
+        variant: "destructive",
+      });
+      return;
+    }
     const newProject: Project = {
       ...projectData,
       id: Date.now().toString(),
@@ -41,11 +57,27 @@ const Index = () => {
   };
 
   const handleEditProject = (project: Project) => {
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to edit projects",
+        variant: "destructive",
+      });
+      return;
+    }
     setEditingProject(project);
     setIsFormOpen(true);
   };
 
   const handleUpdateProject = (projectData: Omit<Project, "id">) => {
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to update projects",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!editingProject) return;
     const updatedProjects = projects.map((p) =>
       p.id === editingProject.id ? { ...projectData, id: p.id } : p
@@ -59,6 +91,14 @@ const Index = () => {
   };
 
   const handleDeleteProject = (id: string) => {
+    if (!isAdmin) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have permission to delete projects",
+        variant: "destructive",
+      });
+      return;
+    }
     setProjects(projects.filter((p) => p.id !== id));
     toast({
       title: "Success",
@@ -86,22 +126,24 @@ const Index = () => {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
-                My Projects
+                My Repos
               </h1>
               <p className="text-gray-400 mt-2">
                 Showcase your websites, repositories, and projects
               </p>
             </div>
-            <Button
-              onClick={() => {
-                setEditingProject(undefined);
-                setIsFormOpen(true);
-              }}
-              className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              Add Project
-            </Button>
+            {isAdmin && (
+              <Button
+                onClick={() => {
+                  setEditingProject(undefined);
+                  setIsFormOpen(true);
+                }}
+                className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add Project
+              </Button>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -131,3 +173,4 @@ const Index = () => {
 };
 
 export default Index;
+
