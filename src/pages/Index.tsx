@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -18,6 +17,15 @@ const Index = () => {
       url: "https://github.com/TaverNxyz/SecureDDropper/releases/tag/v1.4.0",
       technologies: ["Python", "Batch"],
       image: "/lovable-uploads/7d60b015-386d-4c05-aa20-591ca8555c2d.png",
+    },
+    {
+      id: "2",
+      title: "PMC Planner",
+      description: "Kappa Quest Tracker",
+      type: "website",
+      url: "https://kappa.plentifulpower.xyz/",
+      technologies: ["HTML"],
+      image: "/lovable-uploads/89f2a58e-8241-4acc-80e3-4f2ef404c3c9.png",
     },
   ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
