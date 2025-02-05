@@ -130,7 +130,7 @@ const Index = () => {
           type="video/mp4"
         />
       </video>
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
