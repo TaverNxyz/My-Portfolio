@@ -29,9 +29,12 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
-    background-size: 30px 30px;
-    background-color: #fafafa;
+    background: linear-gradient(135deg, #f6f8ff 0%, #e9edff 100%);
+    background-image: 
+      linear-gradient(135deg, #f6f8ff 0%, #e9edff 100%),
+      radial-gradient(circle at center, rgba(99, 102, 241, 0.05) 2px, transparent 2px);
+    background-size: 100% 100%, 30px 30px;
+    min-height: 100vh;
   }
 }
 
