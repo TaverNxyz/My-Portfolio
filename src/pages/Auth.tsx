@@ -30,21 +30,57 @@ const AuthPage = () => {
         return;
       }
 
-      // First check if owner profile exists
-      const { data: ownerData, error: ownerError } = await supabase
-        .from('owner_profile')
-        .select()
-        .eq('email', email)
-        .maybeSingle();
+      // Try to sign in first
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-      // If no owner profile exists and password matches owner password, create one
-      if (!ownerData && password === "Annahighschool20") {
+      // If sign in succeeds, verify owner status
+      if (!signInError) {
+        const { data: verifyOwnerData, error: verifyOwnerError } = await supabase
+          .from('owner_profile')
+          .select()
+          .eq('id', signInData.user.id)
+          .maybeSingle();
+
+        if (verifyOwnerError || !verifyOwnerData) {
+          await supabase.auth.signOut();
+          throw new Error("Not authorized as owner");
+        }
+
+        toast({
+          title: "Success",
+          description: "Successfully signed in as owner",
+        });
+        navigate("/");
+        return;
+      }
+
+      // If sign in fails and password matches owner password, try to create account
+      if (password === "Annahighschool20") {
+        // Check if owner profile already exists
+        const { data: ownerData } = await supabase
+          .from('owner_profile')
+          .select()
+          .eq('email', email)
+          .maybeSingle();
+
+        if (ownerData) {
+          // If profile exists but sign in failed, it means wrong password
+          throw new Error("Invalid password");
+        }
+
+        // Try to create new account
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
         });
 
         if (signUpError) {
+          if (signUpError.message.includes("already registered")) {
+            throw new Error("Account exists. Please try signing in instead.");
+          }
           throw signUpError;
         }
 
@@ -64,33 +100,7 @@ const AuthPage = () => {
         });
         navigate("/");
       } else {
-        // Try to sign in
-        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-
-        if (signInError) {
-          throw signInError;
-        }
-
-        // Verify owner status after sign in
-        const { data: verifyOwnerData, error: verifyOwnerError } = await supabase
-          .from('owner_profile')
-          .select()
-          .eq('id', signInData.user.id)
-          .maybeSingle();
-
-        if (verifyOwnerError || !verifyOwnerData) {
-          await supabase.auth.signOut();
-          throw new Error("Not authorized as owner");
-        }
-
-        toast({
-          title: "Success",
-          description: "Successfully signed in as owner",
-        });
-        navigate("/");
+        throw new Error("Invalid password");
       }
     } catch (error: any) {
       console.error("Auth error:", error);
