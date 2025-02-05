@@ -9,7 +9,17 @@ import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<Project[]>([
+    {
+      id: "1",
+      title: "SecureDDropper",
+      description: "EFT KD Dropper with Round Count and Map Selection",
+      type: "repository",
+      url: "https://github.com/TaverNxyz/SecureDDropper/releases/tag/v1.4.0",
+      technologies: ["Python", "Batch"],
+      image: "/lovable-uploads/7d60b015-386d-4c05-aa20-591ca8555c2d.png",
+    },
+  ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
 
@@ -59,14 +69,14 @@ const Index = () => {
         loop
         muted
         playsInline
-        className="fixed inset-0 w-full h-full object-cover"
+        className="fixed inset-0 w-full h-full object-cover -z-10"
       >
         <source
           src="https://cdn.pixabay.com/video/2020/08/27/48420-453832153_large.mp4"
           type="video/mp4"
         />
       </video>
-      <div className="min-h-screen p-8">
+      <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
