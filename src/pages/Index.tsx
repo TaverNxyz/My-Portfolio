@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Project } from "@/types/project";
+import { Project, ProjectType } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
@@ -40,7 +40,21 @@ const Index = () => {
           throw error;
         }
 
-        setProjects(data || []);
+        // Map the data to ensure type safety
+        const typedProjects: Project[] = (data || []).map(item => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          type: item.type as ProjectType, // Cast to ProjectType
+          url: item.url,
+          image: item.image || undefined,
+          isIframe: item.is_iframe || false,
+          created_at: item.created_at,
+          updated_at: item.updated_at,
+          user_id: item.user_id
+        }));
+
+        setProjects(typedProjects);
       } catch (error) {
         console.error('Error fetching projects:', error);
         toast({
@@ -70,7 +84,12 @@ const Index = () => {
       const { data, error } = await supabase
         .from('projects')
         .insert([{
-          ...projectData,
+          title: projectData.title,
+          description: projectData.description,
+          type: projectData.type,
+          url: projectData.url,
+          image: projectData.image,
+          is_iframe: projectData.isIframe,
           user_id: (await supabase.auth.getUser()).data.user?.id
         }])
         .select()
@@ -78,7 +97,21 @@ const Index = () => {
 
       if (error) throw error;
 
-      setProjects([data, ...projects]);
+      // Map the response to match our Project type
+      const newProject: Project = {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        type: data.type as ProjectType,
+        url: data.url,
+        image: data.image || undefined,
+        isIframe: data.is_iframe || false,
+        created_at: data.created_at,
+        updated_at: data.updated_at,
+        user_id: data.user_id
+      };
+
+      setProjects([newProject, ...projects]);
       toast({
         title: "Success",
         description: "Project added successfully",
@@ -120,7 +153,12 @@ const Index = () => {
       const { error } = await supabase
         .from('projects')
         .update({
-          ...projectData,
+          title: projectData.title,
+          description: projectData.description,
+          type: projectData.type,
+          url: projectData.url,
+          image: projectData.image,
+          is_iframe: projectData.isIframe,
           updated_at: new Date().toISOString(),
         })
         .eq('id', editingProject.id);
@@ -128,7 +166,7 @@ const Index = () => {
       if (error) throw error;
 
       const updatedProjects = projects.map((p) =>
-        p.id === editingProject.id ? { ...projectData, id: p.id } : p
+        p.id === editingProject.id ? { ...projectData, id: editingProject.id } : p
       );
       setProjects(updatedProjects);
       setEditingProject(undefined);
