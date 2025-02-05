@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -27,13 +28,30 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    background: linear-gradient(135deg, #222222 0%, #333333 100%);
-    background-image: 
-      linear-gradient(135deg, #222222 0%, #333333 100%),
-      radial-gradient(circle at center, rgba(234, 56, 76, 0.05) 2px, transparent 2px);
-    background-size: 100% 100%, 30px 30px;
-    min-height: 100vh;
+    @apply bg-background text-foreground relative min-h-screen;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: rgba(34, 34, 34, 0.85);
+  }
+
+  #video-background {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -2;
+    object-fit: cover;
   }
 }
 
