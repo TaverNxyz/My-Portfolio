@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
@@ -7,11 +7,26 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const STORAGE_KEY = "project_showcase_data";
+
 const Index = () => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
+
+  // Load projects from localStorage on initial render
+  useEffect(() => {
+    const savedProjects = localStorage.getItem(STORAGE_KEY);
+    if (savedProjects) {
+      setProjects(JSON.parse(savedProjects));
+    }
+  }, []);
+
+  // Save projects to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+  }, [projects]);
 
   const handleAddProject = (projectData: Omit<Project, "id">) => {
     const newProject: Project = {
@@ -70,7 +85,9 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold">My Projects</h1>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-red-500 to-red-700 bg-clip-text text-transparent">
+                My Projects
+              </h1>
               <p className="text-gray-400 mt-2">
                 Showcase your websites, repositories, and projects
               </p>
@@ -80,14 +97,14 @@ const Index = () => {
                 setEditingProject(undefined);
                 setIsFormOpen(true);
               }}
-              className="glass"
+              className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-5 h-5 mr-2" />
               Add Project
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project) => (
               <ProjectCard
                 key={project.id}
