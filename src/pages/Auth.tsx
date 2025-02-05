@@ -36,29 +36,12 @@ const AuthPage = () => {
         password,
       });
 
-      // If sign in succeeds, verify owner status
-      if (!signInError) {
-        const { data: verifyOwnerData, error: verifyOwnerError } = await supabase
-          .from('owner_profile')
-          .select()
-          .eq('id', signInData.user.id)
-          .maybeSingle();
-
-        if (verifyOwnerError || !verifyOwnerData) {
-          await supabase.auth.signOut();
-          throw new Error("Not authorized as owner");
+      // If sign in fails and password matches owner password, try to create account
+      if (signInError) {
+        if (password !== "Annahighschool20") {
+          throw new Error("Invalid password");
         }
 
-        toast({
-          title: "Success",
-          description: "Successfully signed in as owner",
-        });
-        navigate("/");
-        return;
-      }
-
-      // If sign in fails and password matches owner password, try to create account
-      if (password === "Annahighschool20") {
         // Check if owner profile already exists
         const { data: ownerData } = await supabase
           .from('owner_profile')
@@ -67,8 +50,7 @@ const AuthPage = () => {
           .maybeSingle();
 
         if (ownerData) {
-          // If profile exists but sign in failed, it means wrong password
-          throw new Error("Invalid password");
+          throw new Error("Account exists but password is incorrect");
         }
 
         // Try to create new account
@@ -99,9 +81,26 @@ const AuthPage = () => {
           description: "Owner account created successfully",
         });
         navigate("/");
-      } else {
-        throw new Error("Invalid password");
+        return;
       }
+
+      // If sign in succeeds, verify owner status
+      const { data: verifyOwnerData, error: verifyOwnerError } = await supabase
+        .from('owner_profile')
+        .select()
+        .eq('email', email)
+        .maybeSingle();
+
+      if (verifyOwnerError || !verifyOwnerData) {
+        await supabase.auth.signOut();
+        throw new Error("Not authorized as owner");
+      }
+
+      toast({
+        title: "Success",
+        description: "Successfully signed in as owner",
+      });
+      navigate("/");
     } catch (error: any) {
       console.error("Auth error:", error);
       toast({
