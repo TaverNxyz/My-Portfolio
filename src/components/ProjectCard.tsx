@@ -1,4 +1,3 @@
-
 import { Project } from "@/types/project";
 import { Link2, Github, Folder, ExternalLink, Pencil, Trash2 } from "lucide-react";
 import {
@@ -18,8 +17,12 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
-  const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
+  const ADMIN_KEY = "your-secret-key"; // Make sure this matches exactly
   const isAdmin = localStorage.getItem('admin_key') === ADMIN_KEY;
+  console.log('ProjectCard admin check:', { 
+    storedKey: localStorage.getItem('admin_key'),
+    isAdmin 
+  }); // Debug log
 
   const getIcon = () => {
     switch (project.type) {
@@ -162,4 +165,3 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
-

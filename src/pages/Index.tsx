@@ -1,14 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus, ShieldAlert } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const STORAGE_KEY = "project_showcase_data";
-const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
+const ADMIN_KEY = "your-secret-key"; // This is the exact key you need to use
 
 const Index = () => {
   const { toast } = useToast();
@@ -20,7 +19,10 @@ const Index = () => {
   // Check if user is admin
   useEffect(() => {
     const adminKey = localStorage.getItem('admin_key');
-    setIsAdmin(adminKey === ADMIN_KEY);
+    console.log('Current admin key:', adminKey); // Debug log
+    const isAdminUser = adminKey === ADMIN_KEY;
+    console.log('Is admin?', isAdminUser); // Debug log
+    setIsAdmin(isAdminUser);
   }, []);
 
   // Load projects from localStorage on initial render
@@ -173,4 +175,3 @@ const Index = () => {
 };
 
 export default Index;
-
