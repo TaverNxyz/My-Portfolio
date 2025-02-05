@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -5,8 +6,8 @@ import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
-const STORAGE_KEY = "project_showcase_data";
 const ADMIN_KEY = "your-secret-key"; // This is the exact key you need to use
 
 const Index = () => {
@@ -15,6 +16,7 @@ const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Check if user is admin
   useEffect(() => {
@@ -25,20 +27,36 @@ const Index = () => {
     setIsAdmin(isAdminUser);
   }, []);
 
-  // Load projects from localStorage on initial render
+  // Load projects from Supabase on initial render
   useEffect(() => {
-    const savedProjects = localStorage.getItem(STORAGE_KEY);
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects));
-    }
-  }, []);
+    const fetchProjects = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-  // Save projects to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-  }, [projects]);
+        if (error) {
+          throw error;
+        }
 
-  const handleAddProject = (projectData: Omit<Project, "id">) => {
+        setProjects(data || []);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load projects",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, [toast]);
+
+  const handleAddProject = async (projectData: Omit<Project, "id">) => {
     if (!isAdmin) {
       toast({
         title: "Access Denied",
@@ -47,15 +65,32 @@ const Index = () => {
       });
       return;
     }
-    const newProject: Project = {
-      ...projectData,
-      id: Date.now().toString(),
-    };
-    setProjects([...projects, newProject]);
-    toast({
-      title: "Success",
-      description: "Project added successfully",
-    });
+
+    try {
+      const { data, error } = await supabase
+        .from('projects')
+        .insert([{
+          ...projectData,
+          user_id: (await supabase.auth.getUser()).data.user?.id
+        }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setProjects([data, ...projects]);
+      toast({
+        title: "Success",
+        description: "Project added successfully",
+      });
+    } catch (error) {
+      console.error('Error adding project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add project",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleEditProject = (project: Project) => {
@@ -71,8 +106,8 @@ const Index = () => {
     setIsFormOpen(true);
   };
 
-  const handleUpdateProject = (projectData: Omit<Project, "id">) => {
-    if (!isAdmin) {
+  const handleUpdateProject = async (projectData: Omit<Project, "id">) => {
+    if (!isAdmin || !editingProject) {
       toast({
         title: "Access Denied",
         description: "You don't have permission to update projects",
@@ -80,19 +115,38 @@ const Index = () => {
       });
       return;
     }
-    if (!editingProject) return;
-    const updatedProjects = projects.map((p) =>
-      p.id === editingProject.id ? { ...projectData, id: p.id } : p
-    );
-    setProjects(updatedProjects);
-    setEditingProject(undefined);
-    toast({
-      title: "Success",
-      description: "Project updated successfully",
-    });
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .update({
+          ...projectData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', editingProject.id);
+
+      if (error) throw error;
+
+      const updatedProjects = projects.map((p) =>
+        p.id === editingProject.id ? { ...projectData, id: p.id } : p
+      );
+      setProjects(updatedProjects);
+      setEditingProject(undefined);
+      toast({
+        title: "Success",
+        description: "Project updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update project",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleDeleteProject = (id: string) => {
+  const handleDeleteProject = async (id: string) => {
     if (!isAdmin) {
       toast({
         title: "Access Denied",
@@ -101,11 +155,28 @@ const Index = () => {
       });
       return;
     }
-    setProjects(projects.filter((p) => p.id !== id));
-    toast({
-      title: "Success",
-      description: "Project deleted successfully",
-    });
+
+    try {
+      const { error } = await supabase
+        .from('projects')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setProjects(projects.filter((p) => p.id !== id));
+      toast({
+        title: "Success",
+        description: "Project deleted successfully",
+      });
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete project",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -148,16 +219,26 @@ const Index = () => {
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onEdit={handleEditProject}
-                onDelete={handleDeleteProject}
-              />
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="bg-white/5 rounded-lg h-64"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onEdit={handleEditProject}
+                  onDelete={handleDeleteProject}
+                />
+              ))}
+            </div>
+          )}
 
           <ProjectForm
             project={editingProject}
