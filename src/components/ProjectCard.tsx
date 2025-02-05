@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/components/AuthProvider";
 
 interface ProjectCardProps {
   project: Project;
@@ -19,8 +18,8 @@ interface ProjectCardProps {
 }
 
 const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
-  const { user } = useAuth();
-  const isOwner = user?.id === project.user_id;
+  const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
+  const isAdmin = localStorage.getItem('admin_key') === ADMIN_KEY;
 
   const getIcon = () => {
     switch (project.type) {
@@ -37,9 +36,12 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
     const techs: string[] = [];
     const lowerUrl = url.toLowerCase();
 
+    // GitHub repository detection
     if (lowerUrl.includes('github.com')) {
       techs.push('GitHub');
     }
+
+    // Common web technologies
     if (lowerUrl.includes('vercel.app')) {
       techs.push('Vercel');
     }
@@ -47,6 +49,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
       techs.push('Netlify');
     }
 
+    // Add more technology detection logic here
     return techs;
   };
 
@@ -132,7 +135,7 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
               )}
             </a>
           </Button>
-          {isOwner && (
+          {isAdmin && (
             <div className="flex gap-2">
               <Button
                 variant="ghost"
@@ -159,3 +162,4 @@ const ProjectCard = ({ project, onEdit, onDelete }: ProjectCardProps) => {
 };
 
 export default ProjectCard;
+

@@ -1,59 +1,66 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import { Project } from "@/types/project";
-import ProjectGrid from "@/components/ProjectGrid";
+import ProjectCard from "@/components/ProjectCard";
 import ProjectForm from "@/components/ProjectForm";
 import { Button } from "@/components/ui/button";
-import { Plus, LogIn, LogOut } from "lucide-react";
-import { useAdmin } from "@/hooks/useAdmin";
-import { useProjects } from "@/hooks/useProjects";
+import { Plus, ShieldAlert } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/components/AuthProvider";
-import { supabase } from "@/integrations/supabase/client";
+
+const STORAGE_KEY = "project_showcase_data";
+const ADMIN_KEY = "your-secret-key"; // Replace this with a secure authentication method
 
 const Index = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
-  const isAdmin = useAdmin();
-  const { projects, isLoading, fetchProjects, addProject, updateProject, deleteProject } = useProjects();
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | undefined>();
+  const [isAdmin, setIsAdmin] = useState(false);
 
+  // Check if user is admin
   useEffect(() => {
-    fetchProjects();
+    const adminKey = localStorage.getItem('admin_key');
+    setIsAdmin(adminKey === ADMIN_KEY);
   }, []);
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    toast({
-      title: "Signed out",
-      description: "Successfully signed out",
-    });
-  };
+  // Load projects from localStorage on initial render
+  useEffect(() => {
+    const savedProjects = localStorage.getItem(STORAGE_KEY);
+    if (savedProjects) {
+      setProjects(JSON.parse(savedProjects));
+    }
+  }, []);
 
-  const handleAddProject = async (projectData: Omit<Project, "id">) => {
-    if (!user) {
+  // Save projects to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+  }, [projects]);
+
+  const handleAddProject = (projectData: Omit<Project, "id">) => {
+    if (!isAdmin) {
       toast({
         title: "Access Denied",
-        description: "You must be signed in to add projects",
+        description: "You don't have permission to add projects",
         variant: "destructive",
       });
       return;
     }
-
-    const success = await addProject(projectData);
-    if (success) {
-      setIsFormOpen(false);
-    }
+    const newProject: Project = {
+      ...projectData,
+      id: Date.now().toString(),
+    };
+    setProjects([...projects, newProject]);
+    toast({
+      title: "Success",
+      description: "Project added successfully",
+    });
   };
 
   const handleEditProject = (project: Project) => {
-    if (!user) {
+    if (!isAdmin) {
       toast({
         title: "Access Denied",
-        description: "You must be signed in to edit projects",
+        description: "You don't have permission to edit projects",
         variant: "destructive",
       });
       return;
@@ -62,34 +69,41 @@ const Index = () => {
     setIsFormOpen(true);
   };
 
-  const handleUpdateProject = async (projectData: Omit<Project, "id">) => {
-    if (!user || !editingProject) {
+  const handleUpdateProject = (projectData: Omit<Project, "id">) => {
+    if (!isAdmin) {
       toast({
         title: "Access Denied",
-        description: "You must be signed in to update projects",
+        description: "You don't have permission to update projects",
         variant: "destructive",
       });
       return;
     }
-
-    const success = await updateProject(editingProject.id, projectData);
-    if (success) {
-      setEditingProject(undefined);
-      setIsFormOpen(false);
-    }
+    if (!editingProject) return;
+    const updatedProjects = projects.map((p) =>
+      p.id === editingProject.id ? { ...projectData, id: p.id } : p
+    );
+    setProjects(updatedProjects);
+    setEditingProject(undefined);
+    toast({
+      title: "Success",
+      description: "Project updated successfully",
+    });
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (!user) {
+  const handleDeleteProject = (id: string) => {
+    if (!isAdmin) {
       toast({
         title: "Access Denied",
-        description: "You must be signed in to delete projects",
+        description: "You don't have permission to delete projects",
         variant: "destructive",
       });
       return;
     }
-
-    await deleteProject(id);
+    setProjects(projects.filter((p) => p.id !== id));
+    toast({
+      title: "Success",
+      description: "Project deleted successfully",
+    });
   };
 
   return (
@@ -118,46 +132,30 @@ const Index = () => {
                 Showcase your websites, repositories, and projects
               </p>
             </div>
-            <div className="flex gap-4">
-              {user ? (
-                <>
-                  <Button
-                    onClick={() => {
-                      setEditingProject(undefined);
-                      setIsFormOpen(true);
-                    }}
-                    className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
-                  >
-                    <Plus className="w-5 h-5 mr-2" />
-                    Add Project
-                  </Button>
-                  <Button
-                    onClick={handleSignOut}
-                    variant="outline"
-                    className="glass hover:bg-white/10"
-                  >
-                    <LogOut className="w-5 h-5 mr-2" />
-                    Sign Out
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  onClick={() => navigate("/auth")}
-                  className="glass hover:bg-white/10"
-                >
-                  <LogIn className="w-5 h-5 mr-2" />
-                  Sign In
-                </Button>
-              )}
-            </div>
+            {isAdmin && (
+              <Button
+                onClick={() => {
+                  setEditingProject(undefined);
+                  setIsFormOpen(true);
+                }}
+                className="glass hover:bg-white/10 transition-all duration-300 text-lg px-6 py-3"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Add Project
+              </Button>
+            )}
           </div>
 
-          <ProjectGrid
-            projects={projects}
-            isLoading={isLoading}
-            onEdit={handleEditProject}
-            onDelete={handleDeleteProject}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onEdit={handleEditProject}
+                onDelete={handleDeleteProject}
+              />
+            ))}
+          </div>
 
           <ProjectForm
             project={editingProject}
@@ -175,3 +173,4 @@ const Index = () => {
 };
 
 export default Index;
+

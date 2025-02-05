@@ -9,7 +9,4 @@ export interface Project {
   url: string;
   image?: string;
   isIframe?: boolean;
-  created_at?: string;
-  updated_at?: string;
-  user_id?: string;
 }
