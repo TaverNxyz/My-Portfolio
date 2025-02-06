@@ -86,13 +86,14 @@ const Index = () => {
                 />
               ))}
             </div>
-            <div className="w-[560px] h-[315px] glass p-4">
+            <div className="w-[560px] h-[315px] glass overflow-hidden">
               <iframe
                 width="100%"
                 height="100%"
-                src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1"
+                src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=0&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
+                className="w-full h-full"
               ></iframe>
             </div>
           </div>
