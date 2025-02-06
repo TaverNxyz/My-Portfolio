@@ -62,15 +62,21 @@ const Index = () => {
 
   return (
     <>
-      <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
-        <iframe
-          src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=15TzQSNZJc0"
-          className="w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        ></iframe>
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-      </div>
+      <video
+        id="video-background"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="fixed inset-0 w-full h-full object-cover -z-10"
+      >
+        <source
+          src="https://cdn.pixabay.com/video/2020/08/27/48420-453832153_large.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
       <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col items-center mb-16">
@@ -113,7 +119,7 @@ const Index = () => {
           </div>
 
           <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/3">
               <ProjectCard
                 key={projects[0].id}
                 project={projects[0]}
@@ -122,7 +128,18 @@ const Index = () => {
               />
             </div>
 
-            <div className="w-full md:w-1/2">
+            <div className="w-full md:w-1/3 glass overflow-hidden aspect-video">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=0&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              ></iframe>
+            </div>
+
+            <div className="w-full md:w-1/3">
               <ProjectCard
                 key={projects[1].id}
                 project={projects[1]}
