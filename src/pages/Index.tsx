@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -6,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Github, Discord } from "lucide-react";
+import { Github, MessageSquare } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
@@ -49,7 +50,7 @@ const Index = () => {
     }
   };
 
-  const newProject = {
+  const newProject: Project = {
     id: "3",
     title: "Ragelive.xyz LIVE STREAM RAGE",
     description: "😃",
@@ -111,7 +112,7 @@ const Index = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-300 story-link"
               >
-                <Discord className="w-5 h-5" />
+                <MessageSquare className="w-5 h-5" />
                 <span className="text-lg">escobxrr_ / .cynicalbc</span>
               </a>
             </div>
