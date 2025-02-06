@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -62,21 +61,15 @@ const Index = () => {
 
   return (
     <>
-      <video
-        id="video-background"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="fixed inset-0 w-full h-full object-cover -z-10"
-      >
-        <source
-          src="https://cdn.pixabay.com/video/2020/08/27/48420-453832153_large.mp4"
-          type="video/mp4"
-        />
-        Your browser does not support the video tag.
-      </video>
+      <div className="fixed inset-0 w-full h-full -z-10 pointer-events-none">
+        <iframe
+          src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&loop=1&playlist=15TzQSNZJc0"
+          className="w-full h-full"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        ></iframe>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+      </div>
       <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col items-center mb-16">
