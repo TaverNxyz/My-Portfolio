@@ -49,6 +49,15 @@ const Index = () => {
     }
   };
 
+  const newProject: Project = {
+    id: "3",
+    title: "Ragelive.xyz LIVE STREAM RAGE",
+    description: "😃",
+    type: "website",
+    url: "https://ragelive.xyz/",
+    technologies: ["Web"],
+  };
+
   return (
     <>
       <video
@@ -106,6 +115,18 @@ const Index = () => {
             </div>
           </div>
 
+          {/* New Project Card */}
+          <div className="flex justify-center mb-8">
+            <div className="w-full md:w-1/3">
+              <ProjectCard
+                key={newProject.id}
+                project={newProject}
+                onEdit={() => setIsAuthDialogOpen(true)}
+                onDelete={() => setIsAuthDialogOpen(true)}
+              />
+            </div>
+          </div>
+
           <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
             <DialogContent className="glass sm:max-w-[425px]">
               <DialogHeader>
@@ -144,4 +165,3 @@ const Index = () => {
 };
 
 export default Index;
-
