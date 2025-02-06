@@ -33,7 +33,7 @@ const Index = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
-  const ADMIN_PASSWORD = "taver"; // Simple password for demonstration
+  const ADMIN_PASSWORD = "taver";
 
   const handleAuth = () => {
     if (password === ADMIN_PASSWORD) {
@@ -75,15 +75,26 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onEdit={() => setIsAuthDialogOpen(true)}
-                onDelete={() => setIsAuthDialogOpen(true)}
-              />
-            ))}
+          <div className="flex gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {projects.map((project) => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onEdit={() => setIsAuthDialogOpen(true)}
+                  onDelete={() => setIsAuthDialogOpen(true)}
+                />
+              ))}
+            </div>
+            <div className="w-[560px] h-[315px] glass p-4">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
           </div>
 
           <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
