@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -67,12 +66,15 @@ const Index = () => {
         loop
         muted
         playsInline
+        preload="auto"
         className="fixed inset-0 w-full h-full object-cover -z-10"
+        defaultMuted
       >
         <source
           src="https://cdn.pixabay.com/video/2020/08/27/48420-453832153_large.mp4"
           type="video/mp4"
         />
+        Your browser does not support the video tag.
       </video>
       <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
