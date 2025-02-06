@@ -56,6 +56,7 @@ const Index = () => {
     type: "website",
     url: "https://ragelive.xyz/",
     technologies: ["Web"],
+    image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png"
   };
 
   return (
