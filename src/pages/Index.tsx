@@ -75,27 +75,26 @@ const Index = () => {
             </div>
           </div>
 
-          <div className="flex gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {projects.map((project) => (
-                <ProjectCard
-                  key={project.id}
-                  project={project}
-                  onEdit={() => setIsAuthDialogOpen(true)}
-                  onDelete={() => setIsAuthDialogOpen(true)}
-                />
-              ))}
-            </div>
-            <div className="w-[560px] h-[315px] glass overflow-hidden">
-              <iframe
-                width="100%"
-                height="100%"
-                src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=0&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              ></iframe>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onEdit={() => setIsAuthDialogOpen(true)}
+                onDelete={() => setIsAuthDialogOpen(true)}
+              />
+            ))}
+          </div>
+
+          <div className="glass overflow-hidden w-full aspect-video">
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://www.youtube.com/embed/15TzQSNZJc0?autoplay=1&mute=0&controls=1&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
           </div>
 
           <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
