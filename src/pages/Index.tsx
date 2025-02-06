@@ -76,12 +76,19 @@ const Index = () => {
       </video>
       <div className="min-h-screen p-8 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-4xl font-bold">My Projects</h1>
-              <p className="text-gray-400 mt-2">
-                Showcase your websites, repositories, and projects
-              </p>
+          <div className="flex justify-center mb-16">
+            <div className="relative">
+              <img
+                src="/lovable-uploads/a6176fc6-8240-40dd-aa8e-cf2242a79022.png"
+                alt="Power Tools"
+                className="w-96 animate-fade-in"
+              />
+              <div className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" 
+                   style={{
+                     backgroundSize: '200% 100%',
+                     animation: 'shimmer 2s infinite linear'
+                   }}
+              />
             </div>
           </div>
 
@@ -116,7 +123,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* New Project Card */}
           <div className="flex justify-center mb-8">
             <div className="w-full md:w-1/3">
               <ProjectCard
