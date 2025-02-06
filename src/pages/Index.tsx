@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -68,7 +69,6 @@ const Index = () => {
         playsInline
         preload="auto"
         className="fixed inset-0 w-full h-full object-cover -z-10"
-        defaultMuted
       >
         <source
           src="https://cdn.pixabay.com/video/2020/08/27/48420-453832153_large.mp4"
