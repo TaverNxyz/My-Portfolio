@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Project } from "@/types/project";
 import ProjectCard from "@/components/ProjectCard";
@@ -8,9 +7,11 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Github, MessageSquare } from "lucide-react";
+import TerminalLoader from "@/components/TerminalLoader";
 
 const Index = () => {
   const { toast } = useToast();
+  const [showContent, setShowContent] = useState(false);
   const [projects] = useState<Project[]>([
     {
       id: "1",
@@ -59,6 +60,10 @@ const Index = () => {
     technologies: ["Web"],
     image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png"
   };
+
+  if (!showContent) {
+    return <TerminalLoader onComplete={() => setShowContent(true)} />;
+  }
 
   return (
     <>
