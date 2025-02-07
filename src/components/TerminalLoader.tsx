@@ -46,6 +46,20 @@ const TerminalLoader = ({ onComplete }: { onComplete: () => void }) => {
           <div className="text-green-500 animate-pulse">▮</div>
         )}
       </div>
+
+      {/* Atom Animation */}
+      <div className="atom fixed bottom-8 right-8">
+        <div className="center"></div>
+        <div className="orbit orbit1">
+          <div className="electron electron1"></div>
+        </div>
+        <div className="orbit orbit2">
+          <div className="electron electron2"></div>
+        </div>
+        <div className="orbit orbit3">
+          <div className="electron electron3"></div>
+        </div>
+      </div>
     </div>
   );
 };
