@@ -52,7 +52,7 @@ const Index = () => {
       type: "website",
       url: "https://eftb00st.plentifulpower.xyz/",
       technologies: ["HTML"],
-      image: "https://example.com/image.png",
+      image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.reddit.com%2Fr%2FEscapefromTarkov%2Fcomments%2F1fsx5q0%2Fdiscussion_need_a_profile_photo%2F&psig=AOvVaw035e3AjO6In00WNaqoiC5A&ust=1739801961632000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCNiwtMGxyIsDFQAAAAAdAAAAABAE",
     },
   ]);
 
