@@ -32,7 +32,7 @@ const Index = () => {
       image: "/lovable-uploads/89f2a58e-8241-4acc-80e3-4f2ef404c3c9.png",
     },
     {
-      id: "3",
+      id: "4",
       title: "TaskTacklers",
       description: "Community Elimination Kill Boosting",
       type: "website",
