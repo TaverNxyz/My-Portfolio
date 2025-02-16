@@ -31,16 +31,7 @@ const Index = () => {
       technologies: ["HTML"],
       image: "/lovable-uploads/89f2a58e-8241-4acc-80e3-4f2ef404c3c9.png",
     },
-    {
-      id: "4",
-      title: "TaskTacklers",
-      description: "Community Elimination Kill Boosting",
-      type: "website",
-      url: "https://eftb00st.plentifulpower.xyz/",
-      technologies: ["HTML"],
-      image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fblog.wtfast.com%2Fblog%2Fthe-best-escape-from-tarkov-graphic-settings&psig=AOvVaw3hO1DDU7h8wGUnlV8JFd7y&ust=1739800593484000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNin_7isyIsDFQAAAAAdAAAAABAE",
-    },
-  ]);
+    
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -68,7 +59,17 @@ const Index = () => {
     url: "https://ragelive.xyz/",
     technologies: ["Web"],
     image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png"
-  };
+  },
+  {
+    id: "4",
+    title: "TaskTacklers",
+    description: "Community Elimination Kill Boosting",
+    type: "website",
+    url: "https://eftb00st.plentifulpower.xyz/",
+    technologies: ["HTML"],
+    image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fblog.wtfast.com%2Fblog%2Fthe-best-escape-from-tarkov-graphic-settings&psig=AOvVaw3hO1DDU7h8wGUnlV8JFd7y&ust=1739800593484000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNin_7isyIsDFQAAAAAdAAAAABAE",
+  },
+
 
   if (!showContent) {
     return <TerminalLoader onComplete={() => setShowContent(true)} />;
