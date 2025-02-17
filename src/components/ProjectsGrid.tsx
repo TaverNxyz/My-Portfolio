@@ -4,12 +4,11 @@ import ProjectCard from "@/components/ProjectCard";
 
 interface ProjectsGridProps {
   projects: Project[];
-  newProject: Project;
   onEdit: () => void;
   onDelete: () => void;
 }
 
-const ProjectsGrid = ({ projects, newProject, onEdit, onDelete }: ProjectsGridProps) => {
+const ProjectsGrid = ({ projects, onEdit, onDelete }: ProjectsGridProps) => {
   return (
     <>
       <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
@@ -46,8 +45,8 @@ const ProjectsGrid = ({ projects, newProject, onEdit, onDelete }: ProjectsGridPr
       <div className="flex justify-center mb-8">
         <div className="w-full md:w-1/3">
           <ProjectCard
-            key={newProject.id}
-            project={newProject}
+            key={projects[2].id}
+            project={projects[2]}
             onEdit={onEdit}
             onDelete={onDelete}
           />

@@ -12,11 +12,6 @@ import ProjectsGrid from "@/components/ProjectsGrid";
 const Index = () => {
   const { toast } = useToast();
   const [showContent, setShowContent] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const ADMIN_PASSWORD = "taver";
-
   const [projects] = useState<Project[]>([
     {
       id: "1",
@@ -45,16 +40,11 @@ const Index = () => {
       technologies: ["Web"],
       image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png",
     },
-    {
-      id: "4",
-      title: "TaskTacklers",
-      description: "Community Driven Tarkov Kill Boosting",
-      type: "website",
-      url: "https://eftb00st.plentifulpower.xyz/",
-      technologies: ["HTML"],
-      image: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.rockpapershotgun.com%2Fthe-joy-of-playing-escape-from-tarkov-in-single-player&psig=AOvVaw32b9mNQVJkkfWsxZ66GLXn&ust=1739867346239000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPCy5YqlyosDFQAAAAAdAAAAABAc",
-    },
   ]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const ADMIN_PASSWORD = "taver";
 
   const handleAuth = () => {
     if (password === ADMIN_PASSWORD) {
