@@ -125,6 +125,45 @@
     background: rgba(255, 0, 255);
   }
 
+  .glow-figure {
+    animation: wobble 5s ease-in-out infinite;
+    transform-origin: center center;
+    transform-style: preserve-3d;
+    height: 150px;
+    width: 384px;
+  }
+
+  .glow-image {
+    left: 0;
+    top: 0;
+    animation: glow 10s ease-in-out infinite;
+  }
+
+  @keyframes wobble {
+    0%, 100% { transform: rotate3d(1, 1, 0, 20deg); }
+    25% { transform: rotate3d(-1, 1, 0, 20deg); }
+    50% { transform: rotate3d(-1, -1, 0, 20deg); }
+    75% { transform: rotate3d(1, -1, 0, 20deg); }
+  }
+
+  @keyframes glow {
+    0%, 100% { filter: drop-shadow(0 0 30px red); }
+    25% { filter: drop-shadow(0 0 30px orange); }
+    50% { filter: drop-shadow(0 0 30px #00ff00); }
+    75% { filter: drop-shadow(0 0 30px cyan); }
+  }
+
+  .glow-layer-0 { transform: translateZ(0px); }
+  .glow-layer-1 { transform: translateZ(5px); }
+  .glow-layer-2 { transform: translateZ(10px); }
+  .glow-layer-3 { transform: translateZ(15px); }
+  .glow-layer-4 { transform: translateZ(20px); }
+  .glow-layer-5 { transform: translateZ(25px); }
+  .glow-layer-6 { transform: translateZ(30px); }
+  .glow-layer-7 { transform: translateZ(35px); }
+  .glow-layer-8 { transform: translateZ(40px); }
+  .glow-layer-9 { transform: translateZ(45px); }
+
   @keyframes rotate {
     0% {
       transform: rotate(0deg);

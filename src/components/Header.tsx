@@ -4,20 +4,16 @@ import { Github, MessageSquare } from "lucide-react";
 const Header = () => {
   return (
     <div className="flex flex-col items-center mb-16">
-      <div className="relative mb-4">
-        <img
-          src="/lovable-uploads/a6176fc6-8240-40dd-aa8e-cf2242a79022.png"
-          alt="Power Tools"
-          className="w-96 animate-fade-in"
-        />
-        <div 
-          className="absolute inset-0 animate-shimmer bg-gradient-to-r from-transparent via-white/20 to-transparent" 
-          style={{
-            backgroundSize: '200% 100%',
-            animation: 'shimmer 2s infinite linear'
-          }}
-        />
-      </div>
+      <figure className="glow-figure relative mb-4">
+        {[...Array(10)].map((_, i) => (
+          <img
+            key={i}
+            src="/lovable-uploads/a6176fc6-8240-40dd-aa8e-cf2242a79022.png"
+            alt="Power Tools"
+            className={`w-96 absolute glow-image glow-layer-${i}`}
+          />
+        ))}
+      </figure>
       
       <div className="flex gap-6 animate-fade-in">
         <a 
