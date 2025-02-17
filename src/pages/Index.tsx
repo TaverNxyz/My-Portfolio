@@ -45,7 +45,7 @@ const Index = () => {
     {
       id: "4",
       title: "EZTask",
-      description: "Escape from Tarkov Task Tracker",
+      description: "Community Driven Kill-Boosting Discord Made For Ch34ters To Complete Kill-Requirement Tasks on One Another Without The Risk Of A Ban",
       type: "website",
       url: "https://eztask.plentifulpower.xyz",
       technologies: ["Web", "React"],
