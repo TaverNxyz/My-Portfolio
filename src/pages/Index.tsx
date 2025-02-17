@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Project } from "@/types/project";
 import ProjectForm from "@/components/ProjectForm";
 import { useToast } from "@/hooks/use-toast";
@@ -8,10 +8,12 @@ import Header from "@/components/Header";
 import VideoBackground from "@/components/VideoBackground";
 import AuthDialog from "@/components/AuthDialog";
 import ProjectsGrid from "@/components/ProjectsGrid";
+import { shouldShowTerminal, markTerminalAsShown } from "@/utils/sessionManager";
 
 const Index = () => {
   const { toast } = useToast();
   const [showContent, setShowContent] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
   const [projects] = useState<Project[]>([
     {
       id: "1",
@@ -55,6 +57,14 @@ const Index = () => {
   const [password, setPassword] = useState("");
   const ADMIN_PASSWORD = "taver";
 
+  useEffect(() => {
+    const needsTerminal = shouldShowTerminal();
+    if (!needsTerminal) {
+      setShowContent(true);
+      setTimeout(() => setShouldAnimate(true), 100);
+    }
+  }, []);
+
   const handleAuth = () => {
     if (password === ADMIN_PASSWORD) {
       setIsAuthDialogOpen(false);
@@ -69,14 +79,24 @@ const Index = () => {
     }
   };
 
+  const handleTerminalComplete = () => {
+    markTerminalAsShown();
+    setShowContent(true);
+    setTimeout(() => setShouldAnimate(true), 100);
+  };
+
   if (!showContent) {
-    return <TerminalLoader onComplete={() => setShowContent(true)} />;
+    return <TerminalLoader onComplete={handleTerminalComplete} />;
   }
 
   return (
     <>
       <VideoBackground />
-      <div className="min-h-screen p-8 relative z-10">
+      <div 
+        className={`min-h-screen p-8 relative z-10 transition-all duration-1000 transform ${
+          shouldAnimate ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <Header />
           <ProjectsGrid
