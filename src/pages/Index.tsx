@@ -40,6 +40,15 @@ const Index = () => {
       technologies: ["Web"],
       image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png",
     },
+    {
+      id: "4",
+      title: "EZTask",
+      description: "Escape from Tarkov Task Tracker",
+      type: "website",
+      url: "https://eztask.plentifulpower.xyz",
+      technologies: ["Web", "React"],
+      image: "/lovable-uploads/8636df90-3a30-4a91-9cad-f53e90b55a58.png",
+    }
   ]);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
