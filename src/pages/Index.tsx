@@ -34,15 +34,6 @@ const Index = () => {
       image: "/lovable-uploads/89f2a58e-8241-4acc-80e3-4f2ef404c3c9.png",
     },
     {
-      id: "3",
-      title: "Ragelive.xyz LIVE STREAM RAGE",
-      description: "😃",
-      type: "website",
-      url: "https://ragelive.xyz/",
-      technologies: ["Web"],
-      image: "/lovable-uploads/2cb7e248-a2f4-4fdc-965e-ab8f8b3faed1.png",
-    },
-    {
       id: "4",
       title: "EZTask",
       description: "Community Driven Kill-Boosting Discord Made For Ch34ters To Complete Kill-Requirement Tasks on One Another Without The Risk Of A Ban",

@@ -42,19 +42,11 @@ const ProjectsGrid = ({ projects, onEdit, onDelete }: ProjectsGridProps) => {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
+      <div className="flex justify-center mb-8">
         <div className="w-full md:w-1/3">
           <ProjectCard
             key={projects[2].id}
             project={projects[2]}
-            onEdit={onEdit}
-            onDelete={onDelete}
-          />
-        </div>
-        <div className="w-full md:w-1/3">
-          <ProjectCard
-            key={projects[3].id}
-            project={projects[3]}
             onEdit={onEdit}
             onDelete={onDelete}
           />
